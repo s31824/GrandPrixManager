@@ -11,60 +11,130 @@ const DriversList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(2);
 
-    const [newDriver, setNewDriver] = useState({
+    const initialDriverState = {
         driverNumber: '',
         firstName: '',
         lastName: '',
         team_id: auth.role === 'team_principal' ? auth.teamId : '',
         country: '',
         imageUrl: ''
-    });
+    };
+
+    const [newDriver, setNewDriver] = useState(initialDriverState);
 
     const API_BASE = 'http://127.0.0.1:2000/api/v1';
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [driversRes, teamsRes] = await Promise.all([
-                    fetch(`${API_BASE}/drivers`),
-                    fetch(`${API_BASE}/teams`)
-                ]);
-                const driversData = await driversRes.json();
-                const teamsData = await teamsRes.json();
+    const fetchGridData = async () => {
+        try {
+            const [driversRes, teamsRes] = await Promise.all([
+                fetch(`${API_BASE}/drivers`),
+                fetch(`${API_BASE}/teams`)
+            ]);
+            const driversData = await driversRes.json();
+            const teamsData = await teamsRes.json();
 
-                setTeams(teamsData);
+            setTeams(teamsData);
 
-                let teamsToProcess = teamsData;
-                if (auth.role === 'team_principal' && auth.teamId) {
-                    teamsToProcess = teamsData.filter(t => t.id === auth.teamId);
-                }
-
-                const grouped = teamsToProcess.map(team => ({
-                    ...team,
-                    drivers: driversData.filter(d => d.team_id === team.id)
-                }));
-
-                if (auth.role !== 'team_principal') {
-                    const freeAgents = driversData.filter(d => !d.team_id || d.team_id === 0);
-                    if (freeAgents.length > 0) {
-                        grouped.push({ id: 0, name: "Free Agents", base: "N/A", drivers: freeAgents });
-                    }
-                }
-
-                setGroupedDrivers(grouped);
-                setLoading(false);
-            } catch (err) {
-                console.error(err);
-                setLoading(false);
+            let teamsToProcess = teamsData;
+            if (auth.role === 'team_principal' && auth.teamId) {
+                teamsToProcess = teamsData.filter(t => t.id === auth.teamId);
             }
-        };
-        fetchData();
+
+            const activeDrivers = driversData.filter(d => d.is_active !== 0 && d.is_active !== false);
+            const deactivatedDrivers = driversData.filter(d => d.is_active === 0 || d.is_active === false);
+
+            const grouped = teamsToProcess.map(team => ({
+                ...team,
+                drivers: activeDrivers.filter(d => d.team_id === team.id)
+            }));
+
+            if (auth.role !== 'team_principal') {
+                const freeAgents = activeDrivers.filter(d => !d.team_id || d.team_id === 0);
+                if (freeAgents.length > 0) {
+                    grouped.push({ id: 0, name: "Free Agents", base: "N/A", drivers: freeAgents });
+                }
+
+                if (auth.role === 'admin' && deactivatedDrivers.length > 0) {
+                    grouped.push({
+                        id: 'archive',
+                        name: "ARCHIVE - Deactivated Drivers",
+                        base: "Awaiting Hard Delete",
+                        drivers: deactivatedDrivers
+                    });
+                }
+            }
+
+            setGroupedDrivers(grouped);
+            setLoading(false);
+        } catch (err) {
+            console.error(err);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchGridData();
     }, [auth.role, auth.teamId]);
 
-    const handleDeactivate = (id) => {
+    useEffect(() => {
+        const activeGroups = groupedDrivers.filter(g => g.drivers.length > 0);
+        const maxPage = Math.ceil(activeGroups.length / itemsPerPage);
+
+        if (currentPage > maxPage && maxPage > 0) {
+            setCurrentPage(maxPage);
+        } else if (maxPage === 0 && currentPage !== 1) {
+            setCurrentPage(1);
+        }
+    }, [groupedDrivers, currentPage, itemsPerPage]);
+
+    const handleDeactivate = (id, driverTeamId) => {
         if (window.confirm('Are you sure you want to DEACTIVATE this driver?')) {
-            fetch(`${API_BASE}/drivers/${id}`, { method: 'DELETE' })
-                .then(res => { if (res.ok) window.location.reload(); });
+            fetch(`${API_BASE}/drivers/${id}?teamId=${driverTeamId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${auth.token}`,
+                    'Content-Type': 'application/json'
+                }
+            }).then(async res => {
+                if (res.ok) {
+                    fetchGridData();
+                } else {
+                    const err = await res.json();
+                    alert(`Error: ${err.message}`);
+                }
+            }).catch(err => {
+                console.error('Network error:', err);
+                alert('Error: Could not connect to the server.');
+            });
+        }
+    };
+
+    const handleRestore = (id, driverTeamId) => {
+        const team = teams.find(t => t.id === driverTeamId);
+
+        if (team && (team.is_active === 0 || team.is_active === false)) {
+            alert('Cannot restore driver: The team is currently archived. Please restore the team first.');
+            return;
+        }
+
+        if (window.confirm('Are you sure you want to RESTORE this driver?')) {
+            fetch(`${API_BASE}/drivers/${id}/restore`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${auth.token}`,
+                    'Content-Type': 'application/json'
+                }
+            }).then(async res => {
+                if (res.ok) {
+                    fetchGridData();
+                } else {
+                    const err = await res.json();
+                    alert(`Error: ${err.message}`);
+                }
+            }).catch(err => {
+                console.error('Network error:', err);
+                alert('Error: Could not connect to the server.');
+            });
         }
     };
 
@@ -88,10 +158,24 @@ const DriversList = () => {
         };
 
         fetch(`${API_BASE}/drivers`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${auth.token}`
+            },
+            body: JSON.stringify(payload)
         }).then(async res => {
-            if (res.ok) { window.location.reload(); alert("Driver added!"); }
-            else { const err = await res.json(); alert(`Error: ${err.message}`); }
+            if (res.ok) {
+                fetchGridData();
+                setNewDriver(initialDriverState);
+                alert("Driver added!");
+            } else {
+                const err = await res.json();
+                alert(`Error: ${err.message}`);
+            }
+        }).catch(err => {
+            console.error(err);
+            alert('Error: Could not connect to the server.');
         });
     };
 
@@ -141,7 +225,6 @@ const DriversList = () => {
                             </select>
                         )}
 
-
                         <input name="country" placeholder="Country" value={newDriver.country} onChange={handleChange} className="race-input" required />
                         <input name="imageUrl" placeholder="Photo URL (https://...)" value={newDriver.imageUrl} onChange={handleChange} className="race-input" />
 
@@ -161,7 +244,9 @@ const DriversList = () => {
                             {teamGroup.drivers.map(driver => (
                                 <div key={driver.id} className="driver-card-rect">
                                     <div className="driver-rect-content">
-                                        <span className="driver-rect-number">{driver.driverNumber}</span>
+                                        <span className="driver-rect-number">
+                                            {driver.driverNumber ? driver.driverNumber : '-'}
+                                        </span>
                                         <div className="driver-rect-name">
                                             <span className="driver-rect-firstname">{driver.firstName}</span>
                                             <span className="driver-rect-lastname">{driver.lastName}</span>
@@ -183,9 +268,28 @@ const DriversList = () => {
                                         <Link to={`/driver/${driver.id}`}>
                                             <button className="delete-btn details-btn btn-xs">INFO</button>
                                         </Link>
-                                        {auth.isLoggedIn && (
-                                            <button className="delete-btn btn-xs" onClick={() => handleDeactivate(driver.id)}>X</button>
-                                        )}
+
+                                        {auth.isLoggedIn &&
+                                            (auth.role === 'admin' || auth.teamId === driver.team_id) &&
+                                            driver.is_active !== 0 && driver.is_active !== false && (
+                                                <button
+                                                    className="delete-btn btn-xs"
+                                                    onClick={() => handleDeactivate(driver.id, driver.team_id)}
+                                                >
+                                                    X
+                                                </button>
+                                            )}
+
+                                        {auth.isLoggedIn &&
+                                            auth.role === 'admin' &&
+                                            (driver.is_active === 0 || driver.is_active === false) && (
+                                                <button
+                                                    className="delete-btn btn-xs btn-edit"
+                                                    onClick={() => handleRestore(driver.id, driver.team_id)}
+                                                >
+                                                    RESTORE
+                                                </button>
+                                            )}
                                     </div>
                                 </div>
                             ))}

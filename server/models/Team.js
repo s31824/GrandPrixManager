@@ -11,9 +11,9 @@ module.exports = class Team {
                 team_principal AS teamPrincipal,
                 power_unit AS powerUnit,
                 founded_year AS foundedYear,
-                team_image_url AS teamImageUrl
+                team_image_url AS teamImageUrl,
+                is_active
             FROM teams
-            WHERE is_active = 1
             ORDER BY name ASC
         `);
     }
@@ -27,9 +27,10 @@ module.exports = class Team {
                 team_principal AS teamPrincipal,
                 power_unit AS powerUnit,
                 founded_year AS foundedYear,
-                team_image_url AS teamImageUrl
+                team_image_url AS teamImageUrl,
+                is_active
             FROM teams
-            WHERE id = ? AND is_active = 1
+            WHERE id = ?
         `, [id]);
     }
 
@@ -53,5 +54,9 @@ module.exports = class Team {
 
     static hardDelete(id) {
         return db.execute('DELETE FROM teams WHERE id = ?', [id]);
+    }
+
+    static restore(id) {
+        return db.execute('UPDATE teams SET is_active = 1 WHERE id = ?', [id]);
     }
 };

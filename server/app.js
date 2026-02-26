@@ -1,6 +1,10 @@
 const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const driverRoutes = require('./routes/driverRoutes');
 const teamRoutes = require('./routes/teamRoutes');
 const trackRoutes = require('./routes/trackRoutes');
@@ -9,7 +13,7 @@ const raceResultRoutes = require('./routes/raceResultRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
-const PORT = 2000;
+const PORT = process.env.PORT || 2000;
 
 app.use(cors());
 app.use(bodyParser.json());

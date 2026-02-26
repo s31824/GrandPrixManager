@@ -110,3 +110,14 @@ exports.hardDeleteDriver = async (req, res) => {
         res.status(500).json({ message: 'Failed to delete driver.' });
     }
 };
+
+exports.restoreDriver = async (req, res) => {
+    try {
+        const [result] = await DriverModel.restore(req.params.id);
+        if (result.affectedRows === 0) return res.status(404).json({ message: 'Driver not found.' });
+        res.status(200).json({ message: 'Driver successfully restored.' });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Failed to restore driver.' });
+    }
+};

@@ -304,6 +304,12 @@ button.nav-link {
 .error-msg { color: #ff4d4d; font-size: 12px; margin-top: 5px; font-weight: bold; text-align: center; width: 100%; }
 .empty-list-msg { color: #f9e79f; }
 
+/* --- ARCHIWUM --- */
+.archive-section { margin-top: 50px; }
+.archive-title { color: #c8102e; border-bottom: 2px solid #c8102e; padding-bottom: 10px; }
+.archive-grid { opacity: 0.7; }
+.archived-label { font-size: 0.8rem; color: #c8102e; }
+
 /* --- MEDIA QUERIES --- */
 @media (max-width: 900px) {
     .team-row { grid-template-columns: 1fr; }

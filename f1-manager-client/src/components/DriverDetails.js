@@ -54,12 +54,15 @@ const DriverDetails = () => {
     const handleSaveDriver = () => {
         fetch(`${API_BASE}/drivers/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${auth.token}`
+            },
             body: JSON.stringify(editFormData)
         }).then(async res => {
             if (res.ok) {
                 const updated = await res.json();
-                const team = teams.find(t => t.id == editFormData.team_id);
+                const team = teams.find(t => parseInt(t.id) === parseInt(editFormData.team_id));
 
                 setDriver({
                     ...driver,
@@ -68,14 +71,24 @@ const DriverDetails = () => {
                     image_url: editFormData.imageUrl
                 });
                 setIsEditing(false);
-                alert("Driver updated!");
+                alert("Driver updated successfully!");
+            } else {
+                const err = await res.json();
+                alert(`Error: ${err.message}`);
             }
+        }).catch(err => {
+            console.error("Network error:", err);
+            alert("Error: Could not connect to the server.");
         });
     };
 
     const handleHardDelete = () => {
         if(window.confirm("PERMANENTLY DELETE driver?")) {
-            fetch(`${API_BASE}/drivers/${id}/hard`, { method: 'DELETE' })
+            fetch(`${API_BASE}/drivers/${id}/hard`,
+                {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${auth.token}` }
+                })
                 .then(res => {
                     if (res.ok) navigate('/');
                     else alert("Error");
@@ -85,7 +98,10 @@ const DriverDetails = () => {
 
     const handleDeleteResult = (rid) => {
         if(window.confirm("Remove result?")) {
-            fetch(`${API_BASE}/race-results/${rid}`, { method: 'DELETE' })
+            fetch(`${API_BASE}/race-results/${rid}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${auth.token}` }
+            })
                 .then(() => fetchResults());
         }
     };
@@ -107,8 +123,8 @@ const DriverDetails = () => {
                             <h3 className="card-title-small">Edit Profile</h3>
                             <input name="firstName" value={editFormData.firstName} onChange={handleEditChange} className="edit-input" placeholder="First Name" />
                             <input name="lastName" value={editFormData.lastName} onChange={handleEditChange} className="edit-input" placeholder="Last Name" />
-                            <input name="driverNumber" type="number" value={editFormData.driverNumber} onChange={handleEditChange} className="edit-input" placeholder="Number" />
-                            <select name="team_id" value={editFormData.team_id} onChange={handleEditChange} className="edit-input f1-select">
+                            <input name="driverNumber" type="number" min="0" value={editFormData.driverNumber} onChange={handleEditChange} className="edit-input" placeholder="Number" />
+                            <select name="team_id" value={editFormData.team_id} onChange={handleEditChange} className={`edit-input f1-select ${!isAdmin ? 'input-disabled' : ''}`} disabled={!isAdmin}>
                                 {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                             </select>
                             <input name="country" value={editFormData.country} onChange={handleEditChange} className="edit-input" placeholder="Country" />

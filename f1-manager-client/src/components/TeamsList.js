@@ -16,10 +16,6 @@ const TeamsList = () => {
 
     const API_URL = 'http://127.0.0.1:2000/api/v1/teams';
 
-    useEffect(() => {
-        fetchTeams();
-    }, []);
-
     const fetchTeams = () => {
         fetch(API_URL)
             .then(res => res.json())
@@ -33,22 +29,60 @@ const TeamsList = () => {
             });
     };
 
+    useEffect(() => {
+        fetchTeams();
+    }, []);
+
+    const activeTeams = teams.filter(t => t.is_active !== 0 && t.is_active !== false);
+    const deactivatedTeams = teams.filter(t => t.is_active === 0 || t.is_active === false);
+
+    useEffect(() => {
+        const maxPage = Math.ceil(activeTeams.length / itemsPerPage);
+        if (currentPage > maxPage && maxPage > 0) {
+            setCurrentPage(maxPage);
+        } else if (maxPage === 0 && currentPage !== 1) {
+            setCurrentPage(1);
+        }
+    }, [activeTeams, currentPage, itemsPerPage]);
+
     const handleDelete = (id) => {
         if (window.confirm('Are you sure you want to DEACTIVATE this team?')) {
-            fetch(`${API_URL}/${id}`, { method: 'DELETE' })
-                .then(res => {
-                    if (res.ok) {
-                        const updatedTeams = teams.filter(team => team.id !== id);
-                        setTeams(updatedTeams);
-
-                        const maxPage = Math.ceil(updatedTeams.length / itemsPerPage);
-                        if (currentPage > maxPage && maxPage > 0) {
-                            setCurrentPage(maxPage);
-                        }
-                    }
-                });
+            fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${auth.token}` }
+            }).then(async res => {
+                if (res.ok) {
+                    fetchTeams();
+                } else {
+                    const err = await res.json();
+                    alert(`Error: ${err.message}`);
+                }
+            }).catch(err => {
+                console.error('Network error:', err);
+                alert('Error: Could not connect to the server.');
+            });
         }
     };
+
+    const handleRestore = (id) => {
+        if (window.confirm('Are you sure you want to RESTORE this team?')) {
+            fetch(`${API_URL}/${id}/restore`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${auth.token}` }
+            }).then(async res => {
+                if (res.ok) {
+                    fetchTeams();
+                } else {
+                    const err = await res.json();
+                    alert(`Error: ${err.message}`);
+                }
+            }).catch(err => {
+                console.error('Network error:', err);
+                alert('Error: Could not connect to the server.');
+            });
+        }
+    };
+
     const handleChange = (e) => setNewTeam({ ...newTeam, [e.target.name]: e.target.value });
 
     const handleAddTeam = (e) => {
@@ -60,7 +94,9 @@ const TeamsList = () => {
         };
 
         fetch(API_URL, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth.token}` },
+            body: JSON.stringify(payload)
         }).then(async res => {
             if (res.ok) {
                 fetchTeams();
@@ -70,13 +106,16 @@ const TeamsList = () => {
                 const err = await res.json();
                 alert(`Error: ${err.message}`);
             }
+        }).catch(err => {
+            console.error('Network error:', err);
+            alert('Error: Could not connect to the server.');
         });
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentTeams = teams.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(teams.length / itemsPerPage);
+    const currentTeams = activeTeams.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(activeTeams.length / itemsPerPage);
 
     const changePage = (direction) => {
         if (direction === 'next' && currentPage < totalPages) {
@@ -92,7 +131,7 @@ const TeamsList = () => {
         <div className="f1-container">
             <h2>F1 2025 TEAMS</h2>
 
-            {auth.isLoggedIn && (
+            {auth.isLoggedIn && auth.role === 'admin' && (
                 <div className="race-form-wrapper">
                     <form className="form-grid-3-col" onSubmit={handleAddTeam}>
                         <input name="name" placeholder="Team Name" value={newTeam.name} onChange={handleChange} className="race-input" required />
@@ -128,7 +167,7 @@ const TeamsList = () => {
                                     <button className="delete-btn details-btn">DETAILS</button>
                                 </Link>
 
-                                {auth.isLoggedIn && (
+                                {auth.isLoggedIn && auth.role === 'admin' && (
                                     <button className="delete-btn" onClick={() => handleDelete(team.id)}>
                                         DEACTIVATE
                                     </button>
@@ -140,13 +179,48 @@ const TeamsList = () => {
                 ))}
             </div>
 
-            {teams.length === 0 && <p className="empty-list-msg">No teams found.</p>}
+            {activeTeams.length === 0 && <p className="empty-list-msg">No active teams found.</p>}
 
-            {teams.length > itemsPerPage && (
+            {activeTeams.length > itemsPerPage && (
                 <div className="pagination-container">
                     <button className="pagination-btn" onClick={() => changePage('prev')} disabled={currentPage === 1}>&lt; PREV</button>
                     <span className="page-info">Page {currentPage} of {totalPages}</span>
                     <button className="pagination-btn" onClick={() => changePage('next')} disabled={currentPage === totalPages}>NEXT &gt;</button>
+                </div>
+            )}
+
+            {auth.isLoggedIn && auth.role === 'admin' && deactivatedTeams.length > 0 && (
+                <div className="archive-section">
+                    <h2 className="archive-title">
+                        ARCHIVED TEAMS
+                    </h2>
+                    <div className="cards-grid-2col archive-grid">
+                        {deactivatedTeams.map(team => (
+                            <div key={team.id} className="f1-card">
+                                <div
+                                    className="team-bg-image"
+                                    style={{
+                                        backgroundImage: `url(${team.teamImageUrl ? team.teamImageUrl : "https://placehold.co/600x400/1a1a1a/c8102e?text=No+Image"})`
+                                    }}
+                                ></div>
+                                <div className="card-content">
+                                    <h3>{team.name} <span className="archived-label">(ARCHIVED)</span></h3>
+                                    <p className="team-name">{team.powerUnit}</p>
+                                    <p className="card-country">{team.base}</p>
+
+                                    <div className="card-actions">
+                                        <Link to={`/team/${team.id}`}>
+                                            <button className="delete-btn details-btn">DETAILS</button>
+                                        </Link>
+
+                                        <button className="delete-btn btn-edit" onClick={() => handleRestore(team.id)}>
+                                            RESTORE
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>

@@ -44,7 +44,9 @@ const RaceDetails = () => {
         };
 
         fetch(`${API_BASE}/race-results`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth.token}` },
+            body: JSON.stringify(payload)
         }).then(async res => {
             if (res.ok) { fetchResults(); setNewResult({ driverId: '', position: '', fastestLap: false }); }
             else { const err = await res.json(); alert(err.message); }
@@ -52,7 +54,10 @@ const RaceDetails = () => {
     };
 
     const handleDelete = (resultId) => {
-        if(window.confirm("Remove?")) fetch(`${API_BASE}/race-results/${resultId}`, { method: 'DELETE' }).then(res => { if(res.ok) fetchResults(); });
+        if(window.confirm("Remove?")) fetch(`${API_BASE}/race-results/${resultId}`, {
+            method: 'DELETE' ,
+            headers: { 'Authorization': `Bearer ${auth.token}` }
+        }).then(res => { if(res.ok) fetchResults(); });
     };
 
     if (!race) return <div className="f1-container"><p className="loading-msg">Loading...</p></div>;

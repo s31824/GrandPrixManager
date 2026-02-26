@@ -21,17 +21,39 @@ const TeamDetails = () => {
 
     const handleSave = () => {
         fetch(API_URL, {
-            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth.token}` },
             body: JSON.stringify({ ...editFormData, foundedYear: parseInt(editFormData.foundedYear) })
-        }).then(res => {
-            if(res.ok) { setTeam(editFormData); setIsEditing(false); alert("Team updated!"); }
+        }).then(async res => {
+            if(res.ok) {
+                setTeam(editFormData);
+                setIsEditing(false);
+                alert("Team updated!");
+            } else {
+                const err = await res.json();
+                alert(`Error: ${err.message}`);
+            }
+        }).catch(err => {
+            console.error('Network error:', err);
+            alert('Error: Could not connect to the server.');
         });
     };
 
     const handleHardDelete = () => {
         if(window.confirm("PERMANENTLY DELETE TEAM?")) {
-            fetch(`${API_URL}/hard`, { method: 'DELETE' }).then(res => {
-                if(res.ok) navigate('/teams'); else alert("Error deleting team.");
+            fetch(`${API_URL}/hard`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${auth.token}` }
+            }).then(async res => {
+                if(res.ok) {
+                    navigate('/teams');
+                } else {
+                    const err = await res.json();
+                    alert(`Error: ${err.message}`);
+                }
+            }).catch(err => {
+                console.error('Network error:', err);
+                alert('Error: Could not connect to the server.');
             });
         }
     };

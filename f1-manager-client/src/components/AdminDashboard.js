@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 const AdminDashboard = () => {
     const [teams, setTeams] = useState([]);
@@ -12,8 +13,12 @@ const AdminDashboard = () => {
     const [error, setError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
+    const auth = useContext(AuthContext);
+
     const fetchUsers = () => {
-        fetch('http://127.0.0.1:2000/api/v1/auth/users')
+        fetch('http://127.0.0.1:2000/api/v1/auth/users', {
+            headers: { 'Authorization': `Bearer ${auth.token}` }
+        })
             .then(res => res.json())
             .then(data => setUsers(data))
             .catch(err => console.error('Error fetching users:', err));
@@ -55,6 +60,7 @@ const AdminDashboard = () => {
         try {
             const response = await fetch(`http://127.0.0.1:2000/api/v1/auth/users/${id}`, {
                 method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${auth.token}` }
             });
             if (!response.ok) throw new Error('Delete failed');
 
@@ -92,7 +98,7 @@ const AdminDashboard = () => {
 
             const response = await fetch(url, {
                 method: method,
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${auth.token}` },
                 body: JSON.stringify(payload)
             });
 

@@ -12,10 +12,11 @@ module.exports = class Driver {
                 d.country, 
                 d.team_id,
                 d.imageUrl,
+                d.is_active,
                 t.name AS teamName 
             FROM drivers d
             LEFT JOIN teams t ON d.team_id = t.id
-            WHERE d.is_active = 1
+        
         `);
     }
 
@@ -29,16 +30,17 @@ module.exports = class Driver {
                 d.country, 
                 d.team_id,
                 d.imageUrl,
+                d.is_active,
                 t.name AS teamName 
             FROM drivers d
             LEFT JOIN teams t ON d.team_id = t.id
-            WHERE d.id = ? AND d.is_active = 1
+            WHERE d.id = ? 
         `, [id]);
     }
 
     static findByDriverNumber(driverNumber) {
         return db.execute(
-            'SELECT driver_number FROM drivers WHERE driver_number = ? AND is_active = 1',
+            'SELECT driver_number FROM drivers WHERE driver_number = ?',
             [driverNumber]
         );
     }
@@ -66,6 +68,27 @@ module.exports = class Driver {
 
     static hardDelete(id) {
         return db.execute('DELETE FROM drivers WHERE id = ?', [id]);
+    }
+
+    static restore(id) {
+        return db.execute(
+            'UPDATE drivers SET is_active = 1 WHERE id = ?',
+            [id]
+        );
+    }
+
+    static deactivateByTeam(teamId) {
+        return db.execute(
+            'UPDATE drivers SET is_active = 0, driver_number = NULL WHERE team_id = ?',
+            [teamId]
+        );
+    }
+
+    static restoreByTeam(teamId) {
+        return db.execute(
+            'UPDATE drivers SET is_active = 1 WHERE team_id = ?',
+            [teamId]
+        );
     }
 };
 

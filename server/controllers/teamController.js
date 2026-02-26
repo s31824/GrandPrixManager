@@ -1,4 +1,5 @@
 const TeamModel = require('../models/Team');
+const DriverModel = require('../models/Driver');
 
 exports.getTeams = async (req, res) => {
     try {
@@ -11,7 +12,7 @@ exports.getTeams = async (req, res) => {
 };
 
 exports.getTeamDetails = async (req, res) => {
-    const id = req.params.id;
+    const id = req.params.teamId;
     try {
         const [rows] = await TeamModel.findById(id);
         if (rows.length === 0) {
@@ -44,7 +45,7 @@ exports.createTeam = async (req, res) => {
 };
 
 exports.updateTeam = async (req, res) => {
-    const id = req.params.id;
+    const id = req.params.teamId;
     const { name, base, teamPrincipal, powerUnit, foundedYear, teamImageUrl } = req.body;
 
     if (!name || !base || !teamPrincipal || !powerUnit || !foundedYear) {
@@ -64,9 +65,13 @@ exports.updateTeam = async (req, res) => {
 };
 
 exports.deactivateTeam = async (req, res) => {
+    const teamId = req.params.teamId;
     try {
-        const [result] = await TeamModel.deactivate(req.params.id);
+        const [result] = await TeamModel.deactivate(req.params.teamId);
         if (result.affectedRows === 0) return res.status(404).json({ message: 'Team not found.' });
+
+        await DriverModel.deactivateByTeam(teamId);
+
         res.status(200).json({ message: 'Team deactivated (Soft Delete).' });
     } catch (err) {
         console.log(err);
@@ -76,7 +81,7 @@ exports.deactivateTeam = async (req, res) => {
 
 exports.hardDeleteTeam = async (req, res) => {
     try {
-        const [result] = await TeamModel.hardDelete(req.params.id);
+        const [result] = await TeamModel.hardDelete(req.params.teamId);
         if (result.affectedRows === 0) return res.status(404).json({ message: 'Team not found.' });
         res.status(200).json({ message: 'Team PERMANENTLY deleted.' });
     } catch (err) {
@@ -85,5 +90,20 @@ exports.hardDeleteTeam = async (req, res) => {
             return res.status(409).json({ message: 'Cannot delete: Team has drivers or race results.' });
         }
         res.status(500).json({ message: 'Failed to delete team.' });
+    }
+};
+
+exports.restoreTeam = async (req, res) => {
+    const teamId = req.params.teamId;
+    try {
+        const [result] = await TeamModel.restore(req.params.teamId);
+        if (result.affectedRows === 0) return res.status(404).json({ message: 'Team not found.' });
+
+        await DriverModel.restoreByTeam(teamId);
+
+        res.status(200).json({ message: 'Team successfully restored.' });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Failed to restore team.' });
     }
 };

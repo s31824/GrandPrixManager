@@ -61,7 +61,9 @@ const RacesList = () => {
         const payload = { ...newRace, round: parseInt(newRace.round) };
 
         fetch(API_URL, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth.token}` },
+            body: JSON.stringify(payload)
         }).then(async res => {
             if (res.ok) {
                 fetchData();
@@ -76,7 +78,10 @@ const RacesList = () => {
 
     const handleDelete = (id) => {
         if (window.confirm('Are you sure you want to delete this race?')) {
-            fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+            fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${auth.token}` }
+            })
                 .then(res => {
                     if (res.ok) {
                         setRaces(races.filter(r => r.id !== id));
