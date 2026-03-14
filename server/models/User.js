@@ -6,11 +6,14 @@ module.exports = class User {
     }
 
     static findAdmin() {
-        return db.execute('SELECT * FROM users WHERE role = "admin"');
+        return db.execute('SELECT * FROM users WHERE role = ?', ['admin']);
     }
 
     static findTeamPrincipal(teamId) {
-        return db.execute('SELECT * FROM users WHERE role = "team_principal" AND team_id = ?', [teamId]);
+        return db.execute(
+            'SELECT * FROM users WHERE role = ? AND team_id = ?',
+            ['team_principal', teamId]
+        );
     }
 
     static create(email, passwordHash, role, teamId) {
