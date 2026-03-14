@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import f1Logo from '../assets/f1.png';
 
 const Navigation = () => {
     const auth = useContext(AuthContext);
@@ -17,7 +18,7 @@ const Navigation = () => {
                 <div className="logo">
                     <Link to="/" className="logo-link">
                         <img
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/1024px-F1.svg.png"
+                            src={f1Logo}
                             alt="F1 Logo"
                             className="logo-img"
                         />
