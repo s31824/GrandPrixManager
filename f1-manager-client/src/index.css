@@ -1,15 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
 /* --- BAZA I RESET --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 body {
     background: linear-gradient(135deg, #0b0b0b 0%, #1a1a1a 50%, #0b0b0b 100%);
     color: #e0e0e0;
     font-family: 'Orbitron', sans-serif;
     margin: 0;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .f1-container {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 40px 20px;
@@ -23,15 +29,16 @@ header {
     background-color: #000000; width: 100%; border-bottom: 4px solid #c8102e;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: sticky; top: 0; z-index: 1000;
 }
-header .f1-container { padding: 20px 40px; max-width: 98%; }
-.nav-header { display: flex; justify-content: space-between; align-items: center; }
+header .f1-container { padding: 15px 20px; max-width: 1200px; }
+.nav-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; }
 
 .logo-link { text-decoration: none; color: white; display: flex; align-items: center; gap: 15px; }
-.logo-img { width: 100px; }
-.logo-text { font-size: 32px; font-weight: bold; letter-spacing: 1px; }
+.logo-img { width: 80px; }
+.logo-text { font-size: 24px; font-weight: bold; letter-spacing: 1px; }
 
+nav { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
 .nav-link {
-    margin-left: 40px; text-decoration: none; color: #e0e0e0; font-size: 20px;
+    text-decoration: none; color: #e0e0e0; font-size: 16px;
     font-weight: bold; transition: color 0.3s, text-shadow 0.3s;
 }
 button.nav-link {
@@ -41,11 +48,12 @@ button.nav-link {
 
 /* --- KARTY (WSPÓLNE STYLE) --- */
 .cards-container { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
-.cards-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; max-width: 1200px; margin: 0 auto; }
-.cards-grid-2col .f1-card { width: 100%; box-sizing: border-box; }
+.cards-grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; width: 100%; max-width: 1200px; margin: 0 auto; }
+
 
 .f1-card, .f1-card2 {
-    background: linear-gradient(145deg, #1c1c1c, #111111); border-radius: 10px; width: 340px; padding: 20px;
+    background: linear-gradient(145deg, #1c1c1c, #111111); border-radius: 10px;
+    width: 100%; max-width: 340px; padding: 20px;
     text-align: center; box-shadow: 0 0 15px rgba(200, 10, 30, 0.4), inset 0 0 10px rgba(255, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s; position: relative; border-top: 3px solid #c8102e;
     overflow: hidden; display: flex; flex-direction: column; justify-content: center; min-height: 200px;
@@ -67,13 +75,13 @@ button.nav-link {
 .f1-card p { color: #ccc; margin: 5px 0; font-size: 0.9rem; }
 .f1-card .team-name { color: #fff; font-weight: bold; }
 .f1-card .card-country { font-size: 0.8rem; color: #888; }
-.card-actions { margin-top: 20px; display: flex; justify-content: center; gap: 10px; opacity: 1; position: relative; z-index: 10; }
+.card-actions { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; opacity: 1; position: relative; z-index: 10; }
 
 /* --- SZCZEGÓŁY KIEROWCY I ZESPOŁU --- */
-.driver-detail-card { width: 450px; padding: 30px; min-height: 450px; }
+.driver-detail-card { width: 100%; max-width: 450px; padding: 30px; min-height: 450px; }
 .details-center-wrapper { display: flex; justify-content: center; padding-top: 20px; }
-.detail-img { width: 100%; border-radius: 8px; margin-bottom: 15px; }
-.results-section-wrap { margin-top: 50px; }
+.detail-img { width: 100%; border-radius: 8px; margin-bottom: 15px; height: auto; }
+.results-section-wrap { margin-top: 50px; width: 100%; overflow-x: auto; }
 .section-title { font-size: 24px; border-bottom: 2px solid #333; padding-bottom: 10px; }
 
 .card-title-small {
@@ -89,8 +97,8 @@ button.nav-link {
 }
 .driver-info-align strong { color: #c8102e; font-weight: normal; text-transform: uppercase; font-size: 12px; }
 
-.details-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 25px; border-top: 1px solid #333; }
-.right-actions { display: flex; gap: 15px; }
+.details-actions { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 25px; border-top: 1px solid #333; gap: 15px; }
+.right-actions { display: flex; gap: 15px; flex-wrap: wrap; }
 
 /* --- FORMULARZE, INPUTY I GRID --- */
 .race-form-wrapper {
@@ -99,10 +107,10 @@ button.nav-link {
     width: 100%; max-width: 900px; margin-left: auto; margin-right: auto;
 }
 .race-grid { display: grid; grid-template-columns: 4fr 1fr 2fr 1.5fr; gap: 15px; align-items: center; }
-.form-grid-3-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; align-items: center; }
+.form-grid-3-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: center; }
 
 .race-input, .race-select, .edit-input, .admin-input-group input, .admin-input-group select {
-    width: 100%; box-sizing: border-box; background-color: #111; border: 1px solid #444; color: #fff;
+    width: 100%; background-color: #111; border: 1px solid #444; color: #fff;
     font-family: 'Orbitron', sans-serif; font-size: 14px; outline: none; transition: all 0.3s ease;
 }
 .race-input, .race-select { padding: 12px 15px; border-radius: 6px; height: 48px; }
@@ -113,7 +121,6 @@ button.nav-link {
     border-color: #c8102e; background-color: #000; box-shadow: 0 0 10px rgba(200, 16, 46, 0.3);
 }
 .edit-input:focus { border-left-color: #c8102e; }
-.admin-input-group input:focus, .admin-input-group select:focus { box-shadow: 0 0 15px rgba(200, 16, 46, 0.2); }
 
 .input-disabled { color: #aaa; cursor: not-allowed; background-color: #222; border: 1px solid #444; }
 
@@ -121,67 +128,44 @@ button.nav-link {
     position: relative; display: flex; align-items: center; justify-content: center;
     height: 48px; background-color: #111; border: 1px solid #444; border-radius: 6px; cursor: pointer; transition: all 0.3s; user-select: none;
 }
-.fl-checkbox-wrapper input[type="checkbox"] {
-    display: none;
-}
+.fl-checkbox-wrapper input[type="checkbox"] { display: none; }
 .fl-checkbox-wrapper.active { background-color: rgba(160, 32, 240, 0.2); border-color: #a020f0; }
 .fl-label-text { color: #888; font-size: 12px; font-weight: bold; text-transform: uppercase; }
 .fl-checkbox-wrapper.active .fl-label-text { color: #a020f0; }
 
 /* --- PRZYCISKI --- */
-.btn-add-result {
-    height: 48px; width: 100%; background-color: #c8102e; color: white; border: none; border-radius: 6px;
-    font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 14px; cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s; text-transform: uppercase;
+.btn-add-result, .btn-back, .btn-create-user {
+    font-family: 'Orbitron', sans-serif; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; text-align: center;
 }
+.btn-add-result { height: 48px; width: 100%; background-color: #c8102e; color: white; border: none; border-radius: 6px; font-size: 14px; }
 .btn-add-result:hover { background-color: #ff1a2b; transform: translateY(-2px); }
 
-.btn-back {
-    background-color: #1a1a1a; border: 1px solid #c8102e; color: #fff; padding: 12px 40px; border-radius: 6px;
-    font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 14px; cursor: pointer; text-transform: uppercase;
-    letter-spacing: 1px; transition: all 0.3s ease; min-width: 140px;
-}
-.btn-back:hover { background-color: #c8102e; color: #fff; transform: translateY(-2px); }
+.btn-back { background-color: #1a1a1a; border: 1px solid #c8102e; color: #fff; padding: 12px 40px; border-radius: 6px; font-size: 14px; letter-spacing: 1px; min-width: 140px; }
+.btn-back:hover { background-color: #c8102e; transform: translateY(-2px); }
 
-.delete-btn {
-    background-color: transparent; border: 1px solid #444; color: #666; padding: 5px 15px; cursor: pointer;
-    font-family: 'Orbitron', sans-serif; font-size: 10px; border-radius: 3px; transition: all 0.3s;
-}
+.delete-btn { background-color: transparent; border: 1px solid #444; color: #666; padding: 8px 15px; font-family: 'Orbitron', sans-serif; font-size: 11px; border-radius: 4px; transition: all 0.3s; }
 .delete-btn:hover { border-color: #c8102e; color: #c8102e; }
 .details-btn { border-color: #fff; color: #fff; }
-.details-btn:hover { background-color: #fff; color: #1c1c1c; border-color: #fff; }
-.btn-danger { border-color: #800000; color: #ff4d4d; padding: 13px 20px; font-size: 12px; }
+.details-btn:hover { background-color: #fff; color: #1c1c1c; }
+.btn-danger { border-color: #800000; color: #ff4d4d; }
 .btn-danger:hover { background-color: #800000; color: #fff; }
-.btn-remove { border-color: #444; }
-.btn-edit { background-color: #007acc; color: white; border: none; }
-.btn-edit:hover { background-color: #0094f7; border-color: #0094f7; color: #fff; }
-.details-actions .delete-btn {
-    padding: 10px 24px; font-size: 12px; font-weight: bold; border-radius: 5px; text-transform: uppercase;
-    letter-spacing: 1px; border: 1px solid #444; background-color: rgba(255, 255, 255, 0.05); transition: all 0.3s ease;
-}
+.btn-edit { background-color: #007acc; color: white; border: none; padding: 8px 15px; border-radius: 4px;}
+.btn-edit:hover { background-color: #0094f7; color: #fff; }
 
-.edit-actions { display: flex; justify-content: space-between; gap: 15px; margin-top: 25px; padding-top: 15px; border-top: 1px solid #222; }
-.add-btn {
-    flex: 1; padding: 12px 0; font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 12px;
-    border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: all 0.3s ease; border: 1px solid transparent;
-}
+.edit-actions { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 15px; margin-top: 25px; padding-top: 15px; border-top: 1px solid #222; }
+.add-btn { flex: 1; min-width: 120px; padding: 12px 0; font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 12px; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: all 0.3s ease; border: 1px solid transparent; }
 .btn-save { background-color: #1b5e20; color: #e0e0e0; }
 .btn-save:hover { background-color: #2e7d32; color: #fff; box-shadow: 0 0 10px rgba(46, 125, 50, 0.4); }
 .btn-cancel { background-color: #222; color: #888; border: 1px solid #333; }
 .btn-cancel:hover { background-color: #333; color: #fff; border-color: #555; }
 
-/* Klasy pomocnicze */
-.col-span-1 { grid-column: span 1; }
-.col-span-3 { grid-column: span 3; }
-.btn-xs { font-size: 9px; padding: 4px 8px; }
-
 /* --- TABELE --- */
-.table-wrapper { margin-top: 40px; overflow-x: auto; }
-.f1-table { width: 100%; border-collapse: collapse; color: #e0e0e0; }
+.table-wrapper { margin-top: 40px; overflow-x: auto; width: 100%; border-radius: 8px; border: 1px solid #333; }
+.f1-table { width: 100%; border-collapse: collapse; color: #e0e0e0; min-width: 600px; }
 .f1-table thead tr { background-color: #1a1a1a; border-bottom: 2px solid #c8102e; }
-.f1-table th { padding: 15px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+.f1-table th { padding: 15px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; white-space: nowrap; }
 .f1-table td { padding: 12px; text-align: center; }
-.f1-table tbody tr { border-bottom: 1px solid #333; text-align: center; }
+.f1-table tbody tr { border-bottom: 1px solid #333; transition: background-color 0.2s; }
 .f1-table tbody tr:hover { background-color: #222; }
 
 /* Kolory tekstu */
@@ -193,7 +177,7 @@ button.nav-link {
 
 /* --- WIDOK ZESPOŁÓW I KIEROWCÓW --- */
 .team-rows-container { display: flex; flex-direction: column; gap: 30px; max-width: 1200px; margin: 0 auto; }
-.team-row { display: grid; grid-template-columns: 250px 1fr; gap: 20px; align-items: stretch; }
+.team-row { display: grid; grid-template-columns: 280px 1fr; gap: 20px; align-items: stretch; }
 .team-info-box {
     background: linear-gradient(135deg, #1c1c1c 0%, #000000 100%); border-left: 4px solid #c8102e;
     border-radius: 8px; padding: 25px; display: flex; flex-direction: column; justify-content: center;
@@ -202,131 +186,109 @@ button.nav-link {
 .team-info-box h3 { font-size: 24px; color: #fff; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px; }
 .team-info-box .card-country { font-size: 14px; color: #888; text-transform: uppercase; }
 
-.drivers-pair-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.drivers-pair-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+
+/* POPRAWKA: Uelastycznienie kart prostokątnych */
 .driver-card-rect {
     background: linear-gradient(to right, #1a1a1a, #111); border-radius: 8px; overflow: hidden;
-    display: flex; justify-content: space-between; border: 1px solid #333; transition: transform 0.3s, border-color 0.3s;
-    position: relative; height: 180px;
+    display: flex; border: 1px solid #333; transition: transform 0.3s, border-color 0.3s;
+    position: relative; min-height: 180px; align-items: stretch;
 }
 .driver-card-rect:hover { border-color: #c8102e; transform: translateY(-5px); }
 
 .driver-rect-content {
-    padding: 20px; padding-bottom: 55px; text-align: left; display: flex; flex-direction: column;
-    justify-content: space-between; z-index: 2; position: relative;
+    padding: 20px; text-align: left; display: flex; flex-direction: column;
+    justify-content: space-between; z-index: 2; position: relative; flex: 1; min-width: 0;
 }
-.driver-rect-number { font-size: 42px; font-weight: bold; color: rgba(255, 255, 255, 0.1); position: absolute; top: -5px; left: 15px; z-index: 0; }
-.driver-rect-name { position: relative; z-index: 1; margin-top: 20px; }
-.driver-rect-lastname { display: block; font-size: 22px; font-weight: bold; color: #fff; text-transform: uppercase; }
-.driver-rect-firstname { display: block; font-size: 14px; color: #c8102e; text-transform: uppercase; font-weight: bold; }
-.driver-rect-country { font-size: 12px; color: #666; margin-top: 10px; }
+.driver-rect-number { font-size: 42px; font-weight: bold; color: rgba(255, 255, 255, 0.1); position: absolute; top: -5px; left: 15px; z-index: 0; pointer-events: none; }
+.driver-rect-name { position: relative; z-index: 1; margin-top: 10px; margin-bottom: 40px;}
+.driver-rect-lastname { display: block; font-size: 20px; font-weight: bold; color: #fff; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.driver-rect-firstname { display: block; font-size: 13px; color: #c8102e; text-transform: uppercase; font-weight: bold; }
+.driver-rect-country { font-size: 12px; color: #666; margin-top: 5px; }
 
 .driver-photo-wrapper {
-    width: 200px; height: 100%; position: relative; overflow: hidden; background-color: #1a1a1a; border-left: 1px solid #333;
+    width: 40%; max-width: 200px; flex-shrink: 0; position: relative; overflow: hidden; background-color: #1a1a1a; border-left: 1px solid #333;
 }
 .driver-photo-wrapper::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 100%; }
 .driver-real-photo {
     width: 100%; height: 100%; object-fit: cover; object-position: top center;
     opacity: 0.85; filter: grayscale(20%) brightness(0.9); transition: all 0.5s ease;
 }
-.driver-rect-actions { position: absolute; bottom: 15px; left: 15px; right: auto; z-index: 10; display: flex; gap: 10px; }
+.driver-rect-actions { position: absolute; bottom: 15px; left: 15px; z-index: 10; display: flex; gap: 10px; }
 
 /* --- AUTORYZACJA I ADMIN PANEL --- */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 .auth-card {
     background: rgba(18, 18, 18, 0.98); border: 1px solid #333; border-top: 4px solid #c8102e;
-    border-radius: 12px; padding: 40px; margin: 50px auto; width: 100%; max-width: 450px;
+    border-radius: 12px; padding: 40px 25px; margin: 50px auto; width: 100%; max-width: 450px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7); animation: fadeIn 0.6s ease-out;
 }
 .auth-form { display: flex; flex-direction: column; gap: 20px; }
-.auth-form .race-input { font-size: 16px; }
-.auth-form .btn-add-result { margin-top: 10px; letter-spacing: 1px; }
 
 .admin-dashboard-panel {
     background: linear-gradient(145deg, rgba(20, 20, 20, 0.95), rgba(10, 10, 10, 0.98));
-    border: 1px solid #333; border-top: 4px solid #c8102e; border-radius: 12px; padding: 40px;
-    max-width: 800px; margin: 40px auto; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    border: 1px solid #333; border-top: 4px solid #c8102e; border-radius: 12px; padding: 40px 25px;
+    max-width: 800px; margin: 40px auto; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8); width: 100%;
 }
-
 .admin-header-box { margin-bottom: 40px; text-align: left; border-bottom: 1px solid #333; padding-bottom: 20px; }
-.admin-title { font-family: 'Orbitron', sans-serif; color: #fff; font-size: 28px; margin: 0; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
-.admin-subtitle { color: #c8102e; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+.admin-title { font-family: 'Orbitron', sans-serif; color: #fff; font-size: 24px; margin: 0; letter-spacing: 1px; }
 
 .admin-form { display: flex; flex-direction: column; gap: 25px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
 .admin-input-group { display: flex; flex-direction: column; text-align: left; }
 .admin-input-group label { font-size: 11px; color: #888; font-weight: bold; margin-bottom: 8px; letter-spacing: 1px; }
 
 .btn-create-user {
-    margin-top: 10px; background: linear-gradient(90deg, #c8102e 0%, #a00d23 100%); flex: 1;
-    color: white; font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 16px; padding: 18px; border: none;
-    border-radius: 6px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: transform 0.2s, box-shadow 0.3s;
+    margin-top: 10px; background: linear-gradient(90deg, #c8102e 0%, #a00d23 100%); width: 100%;
+    color: white; padding: 18px; border: none; border-radius: 6px; letter-spacing: 2px;
 }
 .btn-create-user:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(200, 16, 46, 0.4); }
-.btn-create-user:active { transform: translateY(0); }
 
 .status-message-container { min-height: 24px; }
 .status-msg { padding: 12px; border-radius: 4px; font-size: 13px; font-weight: bold; text-align: center; animation: fadeIn 0.4s ease; }
 .status-msg.error { background-color: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; color: #ff4d4d; }
 .status-msg.success { background-color: rgba(46, 139, 87, 0.1); border: 1px solid #2e8b57; color: #2e8b57; }
 
-.admin-table-section { margin-top: 50px; border-top: 1px solid #333; padding-top: 30px; }
-.admin-table-title { margin-bottom: 20px; font-size: 14px; }
-.admin-input-group.disabled { opacity: 0.3; pointer-events: none; }
-.role-cell { text-transform: uppercase; font-weight: bold; color: #e0e0e0; }
-.role-admin { color: #c8102e; }
-.empty-table-msg { padding: 20px; color: #888; font-style: italic; }
-.form-actions-row { display: flex; gap: 15px; margin-top: 10px; }
-
-.btn-cancel-edit {
-    flex: 0.3; background: #333; color: #ccc; font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 14px;
-    border: 1px solid #444; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: all 0.3s;
-}
-.btn-cancel-edit:hover { background: #444; color: #fff; border-color: #666; }
-.input-label-hint { font-size: 9px; color: #888; margin-left: 5px; text-transform: none; letter-spacing: 0; }
-.table-actions-cell { display: flex; justify-content: center; gap: 10px; }
-.btn-sm { padding: 6px 12px; font-size: 10px; border-radius: 4px; cursor: pointer; text-transform: uppercase; font-family: 'Orbitron', sans-serif; font-weight: bold; letter-spacing: 1px; transition: all 0.2s; }
-.btn-table-edit { background-color: #0056b3; color: white; border: 1px solid #004494; }
-.btn-table-edit:hover { background-color: #007bff; border-color: #007bff; transform: translateY(-2px); }
-.btn-table-delete { background-color: transparent; color: #ff4d4d; border: 1px solid #660000; }
-.btn-table-delete:hover { background-color: #660000; color: #fff; border-color: #ff0000; }
-
 /* INNE POMOCNICZE */
-.filter-container { display: flex; justify-content: flex-end; align-items: center; max-width: 1200px; margin: 0 auto 20px auto; padding: 0 20px; gap: 15px; }
+.filter-container { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; max-width: 1200px; margin: 0 auto 20px auto; padding: 0 20px; gap: 15px; }
 .filter-label { font-size: 14px; color: #888; text-transform: uppercase; font-weight: bold; }
-.filter-select { width: 150px; height: 40px; padding: 5px 10px; background-color: #111; border: 1px solid #444; color: #fff; border-radius: 5px; font-family: 'Orbitron', sans-serif; outline: none; cursor: pointer; }
+.filter-select { width: 100%; max-width: 200px; height: 40px; padding: 5px 10px; background-color: #111; border: 1px solid #444; color: #fff; border-radius: 5px; font-family: 'Orbitron', sans-serif; }
 
-.pagination-container { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 40px; margin-bottom: 20px; }
+.pagination-container { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 15px; margin-top: 40px; margin-bottom: 20px; }
 .pagination-btn { background-color: #1a1a1a; color: #fff; border: 1px solid #444; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron', sans-serif; transition: all 0.3s; }
 .pagination-btn:hover:not(:disabled) { background-color: #c8102e; border-color: #c8102e; }
 .pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.page-info { font-size: 14px; color: #888; font-weight: bold; }
-.back-btn-wrapper { margin-top: 30px; }
-.error-msg { color: #ff4d4d; font-size: 12px; margin-top: 5px; font-weight: bold; text-align: center; width: 100%; }
-.empty-list-msg { color: #f9e79f; }
 
-/* --- ARCHIWUM --- */
-.archive-section { margin-top: 50px; }
-.archive-title { color: #c8102e; border-bottom: 2px solid #c8102e; padding-bottom: 10px; }
-.archive-grid { opacity: 0.7; }
-.archived-label { font-size: 0.8rem; color: #c8102e; }
+/* --- MEDIA QUERIES (Pełna Responsywność) --- */
 
-/* --- MEDIA QUERIES --- */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .team-row { grid-template-columns: 1fr; }
-    .team-info-box { text-align: center; border-left: none; border-top: 4px solid #c8102e; padding: 15px; }
-    .form-grid-3-col { grid-template-columns: 1fr 1fr; }
-    .cards-grid-2col { grid-template-columns: 1fr; }
+    .team-info-box { text-align: center; border-left: none; border-top: 4px solid #c8102e; align-items: center; }
 }
+
 @media (max-width: 768px) {
+    .nav-header { flex-direction: column; text-align: center; }
+    nav { justify-content: center; margin-top: 10px; }
+
     .race-grid { grid-template-columns: 1fr; }
-    .form-grid-3-col { grid-template-columns: 1fr; }
-    .form-row { grid-template-columns: 1fr; }
-    .filter-container { justify-content: center; }
+
+    .driver-card-rect { flex-direction: column; height: auto; }
+    .driver-photo-wrapper { width: 100%; max-width: 100%; height: 250px; border-left: none; border-bottom: 1px solid #333; }
+    .driver-rect-content { padding-bottom: 60px; }
+    .driver-rect-number { top: 10px; left: auto; right: 15px; }
+
+    .filter-container { justify-content: center; flex-direction: column; }
+    .filter-select { max-width: 100%; }
 }
-@media (max-width: 600px) {
-    .drivers-pair-container { grid-template-columns: 1fr; }
-    .details-actions { flex-direction: column; gap: 20px; }
-    .right-actions { width: 100%; justify-content: space-between; }
-    .btn-back { width: 100%; }
-    .driver-detail-card { width: 100%; padding: 20px; }
+
+@media (max-width: 480px) {
+    .logo-text { font-size: 18px; }
+    nav { gap: 10px; }
+    .nav-link { font-size: 14px; }
+
+    .driver-detail-card { padding: 15px; }
+    .driver-name { font-size: 22px; }
+    .details-actions, .edit-actions { flex-direction: column; }
+    .right-actions { justify-content: space-between; width: 100%; }
+    .btn-back, .add-btn, .details-actions .delete-btn { width: 100%; margin-bottom: 10px; }
 }
