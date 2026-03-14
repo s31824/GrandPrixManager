@@ -13,7 +13,7 @@ const DriverDetails = () => {
     const [editFormData, setEditFormData] = useState({});
     const [raceResults, setRaceResults] = useState([]);
 
-    const API_BASE = 'http://127.0.0.1:2000/api/v1';
+    const API_BASE = 'http://f1-manager-api.onrender.com/api/v1';
 
     useEffect(() => {
         const fetchData = async () => {

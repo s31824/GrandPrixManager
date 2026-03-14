@@ -16,7 +16,7 @@ const AdminDashboard = () => {
     const auth = useContext(AuthContext);
 
     const fetchUsers = () => {
-        fetch('http://127.0.0.1:2000/api/v1/auth/users', {
+        fetch('http://f1-manager-api.onrender.com/api/v1/auth/users', {
             headers: { 'Authorization': `Bearer ${auth.token}` }
         })
             .then(res => res.json())
@@ -25,7 +25,7 @@ const AdminDashboard = () => {
     };
 
     useEffect(() => {
-        fetch('http://127.0.0.1:2000/api/v1/teams')
+        fetch('http://f1-manager-api.onrender.com/api/v1/teams')
             .then(res => res.json())
             .then(data => setTeams(data))
             .catch(err => console.error(err));
@@ -58,7 +58,7 @@ const AdminDashboard = () => {
         if (!window.confirm('Are you sure you want to delete this user?')) return;
 
         try {
-            const response = await fetch(`http://127.0.0.1:2000/api/v1/auth/users/${id}`, {
+            const response = await fetch(`http://f1-manager-api.onrender.com/api/v1/auth/users/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${auth.token}` }
             });
@@ -91,8 +91,8 @@ const AdminDashboard = () => {
 
         try {
             const url = editingId
-                ? `http://127.0.0.1:2000/api/v1/auth/users/${editingId}`
-                : 'http://127.0.0.1:2000/api/v1/auth/signup';
+                ? `http://f1-manager-api.onrender.com/api/v1/auth/users/${editingId}`
+                : 'http://f1-manager-api.onrender.com/api/v1/auth/signup';
 
             const method = editingId ? 'PUT' : 'POST';
 

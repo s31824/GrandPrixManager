@@ -18,8 +18,8 @@ const RacesList = () => {
     });
 
     const location = useLocation();
-    const API_URL = 'http://127.0.0.1:2000/api/v1/races';
-    const TRACKS_URL = 'http://127.0.0.1:2000/api/v1/tracks';
+    const API_URL = 'http://f1-manager-api.onrender.com/api/v1/races';
+    const TRACKS_URL = 'http://f1-manager-api.onrender.com/api/v1/tracks';
 
     useEffect(() => {
         fetchData();

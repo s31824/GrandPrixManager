@@ -11,7 +11,7 @@ const TeamDetails = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [editFormData, setEditFormData] = useState({});
 
-    const API_URL = `http://127.0.0.1:2000/api/v1/teams/${id}`;
+    const API_URL = `http://f1-manager-api.onrender.com/api/v1/teams/${id}`;
 
     useEffect(() => {
         fetch(API_URL).then(res => res.json()).then(data => { setTeam(data); setEditFormData(data); });

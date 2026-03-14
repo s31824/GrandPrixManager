@@ -22,7 +22,7 @@ const DriversList = () => {
 
     const [newDriver, setNewDriver] = useState(initialDriverState);
 
-    const API_BASE = 'http://127.0.0.1:2000/api/v1';
+    const API_BASE = 'http://f1-manager-api.onrender.com/api/v1';
 
     const fetchGridData = async () => {
         try {
