@@ -11,7 +11,7 @@ const RaceDetails = () => {
     const [allDrivers, setAllDrivers] = useState([]);
 
     const [newResult, setNewResult] = useState({ driverId: '', position: '', fastestLap: false });
-    const API_BASE = 'http://f1-manager-api.onrender.com/api/v1';
+    const API_BASE = 'https://f1-manager-api.onrender.com/api/v1';
 
     useEffect(() => {
         fetch(`${API_BASE}/races/${id}`).then(res => res.json()).then(data => setRace(data));

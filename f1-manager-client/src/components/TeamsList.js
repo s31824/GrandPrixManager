@@ -14,7 +14,7 @@ const TeamsList = () => {
         name: '', base: '', teamPrincipal: '', powerUnit: '', foundedYear: '', teamImageUrl: ''
     });
 
-    const API_URL = 'http://f1-manager-api.onrender.com/api/v1/teams';
+    const API_URL = 'https://f1-manager-api.onrender.com/api/v1/teams';
 
     const fetchTeams = () => {
         fetch(API_URL)
