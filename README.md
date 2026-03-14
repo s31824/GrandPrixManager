@@ -12,7 +12,7 @@ A Fullstack Web Application for managing a Formula 1 grid. Built with React, Nod
 ---
 
 ## 📸 Preview
-![preview.png](src/assets/preview.png)
+![preview.png](f1-manager-client/src/assets/preview.png)
 
 ---
 
