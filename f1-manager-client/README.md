@@ -12,7 +12,7 @@ A Fullstack Web Application for managing a Formula 1 grid. Built with React, Nod
 ---
 
 ## 📸 Preview
-![F1 Manager Screenshot](./screenshot.png)
+![preview.png](src/assets/preview.png)
 
 ---
 
@@ -37,10 +37,10 @@ This project is built using a modern **Three-Tier Architecture**:
 
 ### 2. Application Tier (Backend)
 * **Technologies:** Node.js, Express.js.
-* **Hosting:** Deployed as a Web Service on **Render** (Frankfurt Data Center).
+* **Hosting:** Deployed as a Web Service on **Render**.
 * **Role:** Acts as the bridge between the client and the database. Handles business logic, CORS, routing, and processes API requests.
 
 ### 3. Data Tier (Database)
 * **Technologies:** MySQL.
-* **Hosting:** Cloud Database hosted on **Aiven** (Finland Data Center).
+* **Hosting:** Cloud Database hosted on **Aiven**.
 * **Role:** Securely stores all relational data (teams, drivers, users) and enforces data integrity. Connected to the backend via an SSL-encrypted connection.
