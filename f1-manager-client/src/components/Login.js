@@ -10,6 +10,13 @@ const Login = () => {
 
     const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
+    const handleFillDemo = () => {
+        setFormData({
+            email: process.env.REACT_APP_DEMO_EMAIL,
+            password: process.env.REACT_APP_DEMO_PASSWORD
+        });
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
@@ -64,6 +71,19 @@ const Login = () => {
                         ENTER PADDOCK
                     </button>
                 </form>
+
+                <div className="demo-section">
+                    <p className="demo-title">Demo Access</p>
+                    <p className="demo-text">Click to auto-fill admin credentials</p>
+                    <button
+                        type="button"
+                        onClick={handleFillDemo}
+                        className="btn-demo-fill"
+                    >
+                        USE ADMIN ACCOUNT
+                    </button>
+                </div>
+
             </div>
         </div>
     );

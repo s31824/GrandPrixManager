@@ -330,3 +330,48 @@ button.nav-link {
     .btn-back { width: 100%; }
     .driver-detail-card { width: 100%; padding: 20px; }
 }
+
+/* --- DEMO SECTION --- */
+.demo-section {
+    margin-top: 25px;
+    padding: 15px;
+    border: 1px dashed #c8102e;
+    border-radius: 8px;
+    background-color: rgba(200, 16, 46, 0.05);
+    text-align: center;
+}
+
+.demo-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    margin: 0 0 5px 0;
+    letter-spacing: 1px;
+}
+
+.demo-text {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.btn-demo-fill {
+    background: transparent;
+    border: 1px solid #c8102e;
+    color: #c8102e;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.btn-demo-fill:hover {
+    background-color: #c8102e;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(200, 16, 46, 0.4);
+}
